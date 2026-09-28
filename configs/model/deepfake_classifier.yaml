@@ -1,0 +1,35 @@
+_target_: src.models.deepfake_module.SSLDeepFakeLitModule
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 5e-5
+  weight_decay: 1e-6
+  eps : 1e-8
+  betas: [0.9, 0.98]
+
+scheduler:
+  _target_: src.utils.schedulers.CosineWarmupLR
+  _partial_: true
+  lr_min: 1e-9
+  lr_max: ${model.optimizer.lr}
+  warmup: 0
+  T_max: ${trainer.max_epochs}
+
+net:
+  _target_: src.models.components.SLL_simple_classifier.SSLDeepFakeDynamicModel
+  # model_name: microsoft/wavlm-large
+  # model_name: facebook/hubert-large-ls960-ft
+  model_name: facebook/wav2vec2-xls-r-300m
+  # model_name: labhamlet/gramt-binaural-time
+  freeze_backbone: false
+  mlp_input_dim: 1024
+  mlp_hidden_dim: 1024
+  mlp_num_layers: 2
+  mlp_output_size: 2
+  layer_weight_strategy: per_layer
+  num_feature_layers: 24
+  pooling_strategy: mean
+
+# compile model for faster training with pytorch 2.0
+compile: false

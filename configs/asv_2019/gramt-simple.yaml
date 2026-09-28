@@ -1,38 +1,28 @@
 
-model_name: "facebook/wav2vec2-xls-r-300m"
+
+model_name: "labhamlet/gramt-binaural-time"
 
 defaults:
   - data: LA2019
   - model: deepfake_classifier
   - callbacks: experimento_test
-  - logger: wandb # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - logger: wandb 
   - trainer: gpu
   - paths: default
   - extras: default
   - hydra: default
 
-  # experiment configs allow for version control of specific hyperparameters
-  # e.g. best hyperparameters for given model and datamodule
+
   - experiment: null
-
-  # config for hyperparameter optimization
   - hparams_search: null
-
-  # optional local config for machine/user specific settings
-  # it's optional since it doesn't need to exist and is excluded from version control
   - optional local: default
-
-  # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
   - _self_
 
 # task name, determines output directory path
 task_name: "train"
 
-# tags to help you identify your experiments
-# you can overwrite this in experiment configs
-# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
-tags: ["testing"]
+tags: ["wavlm-large", "unfrozen_backbone", "per_layer_weights", "MLP", "mean_pooling"]
 
 # set False to skip model training
 train: True
@@ -49,10 +39,13 @@ seed: 42
 
 data:
   model_name: ${model_name}
+  target_sample_rate: 32000
 
 model:
   net:
+    _target_: src.models.components.SLL_simple_classifier.GramtDeepFakeDynamicModel
     model_name: ${model_name}
+
 
 wandb:
   project: "Deepfake-RADAR-Experiments"

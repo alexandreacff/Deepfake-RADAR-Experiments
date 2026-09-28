@@ -1,8 +1,10 @@
 # --------- pytorch --------- #
 torch>=2.0.0
+torchaudio>=2.0.0
 torchvision>=0.15.0
 lightning>=2.0.0
 torchmetrics>=0.11.4
+transformers==4.46.3
 
 # --------- hydra --------- #
 hydra-core==1.3.2
@@ -10,7 +12,7 @@ hydra-colorlog==1.2.0
 hydra-optuna-sweeper==1.2.0
 
 # --------- loggers --------- #
-# wandb
+wandb
 # neptune-client
 # mlflow
 # comet-ml
@@ -22,3 +24,6 @@ pre-commit      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
+einops
+matplotlib
+timm

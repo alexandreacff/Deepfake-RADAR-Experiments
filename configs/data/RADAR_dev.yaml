@@ -1,0 +1,11 @@
+_target_: src.data.RADAR_dev_datamodule.RADARDataModule
+data_dir: "/workspace/datasets/RADAR_dev/RADAR2026-dev"
+protocol_file: "label_RADAR2026-dev.txt"
+audio_dir: "flac"
+audio_ext: ".flac"
+batch_size: 32
+num_workers: 4
+persistent_workers: false
+pin_memory: false
+model_name: facebook/wav2vec2-xls-r-300m
+target_sample_rate: 16000

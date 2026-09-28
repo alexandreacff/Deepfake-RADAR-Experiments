@@ -1,0 +1,107 @@
+
+
+model_name: "facebook/wav2vec2-xls-r-300m"
+
+defaults:
+  - data: mlaad
+  - model: deepfake_classifier
+  - callbacks: experimento_test
+  - logger: wandb 
+  - trainer: gpu
+  - paths: default
+  - extras: default
+  - hydra: default
+
+
+  - experiment: null
+  - hparams_search: null
+  - optional local: default
+  - debug: null
+  - _self_
+
+# task name, determines output directory path
+task_name: "train"
+
+tags: ["wav2vec2-xls-r-300m", "frozen_backbone", "per_layer_weights", "MLP", "mean_pooling", "MLAAD", "ddp", "augmentation"]
+
+# set False to skip model training
+train: True
+
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on the metric specified in checkpoint callback
+test: True
+
+# simply provide checkpoint path to resume training
+ckpt_path: null
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: 42
+
+data:
+  batch_size: 64
+  num_workers: 64
+  prefetch_factor: 4
+  model_name: ${model_name}
+  pin_memory: true
+  max_audio_seconds: 10.0
+  truncate_mode: random
+  augmentation:
+    enabled: true
+    apply_probability: 0.6
+
+    # Signal level operations
+    peak_level_prob: 0.2
+    peak_level_dbfs_range: [-6.0, -1.0]
+    fade_prob: 0.2
+    fade_ms_range: [5.0, 40.0]
+    fade_shape: linear
+
+    # Signal structure modifications
+    trim_silence_prob: 0.1
+    trim_silence_threshold_dbfs: -40.0
+    zero_padding_prob: 0.1
+    zero_padding_target_num_samples: 64600
+    zero_padding_mode: right
+
+    # Environmental conditions
+    env_noise_prob: 0.3
+    env_noise_snr_db_range: [10.0, 25.0]
+    background_music_prob: 0.2
+    background_music_snr_db_range: [15.0, 30.0]
+    rir_prob: 0.2
+    noise_paths:
+      - /workspace/datasets/augmentation/musan/noise/**/*.wav
+
+    music_paths:
+      - /workspace/datasets/augmentation/musan/music/**/*.wav
+
+    rir_paths:
+      - /workspace/datasets/augmentation/rirs_noises/**/*.wav
+
+
+    # Media channel effects
+    codec_prob: 0.1
+    codec_format: mp3
+    codec_compression: 64k
+    resample_prob: 0.2
+    resample_temp_rate_range: [8000, 12000]
+    drc_prob: 0.2
+    drc_amount: 6.0
+    bandwidth_prob: 0.2
+    bandwidth_low_freq: null
+    bandwidth_high_freq_range: [3000.0, 7000.0]
+
+model:
+  net:
+    model_name: ${model_name}
+    freeze_backbone: true
+
+trainer:
+  accumulate_grad_batches: 1
+  precision: bf16-mixed
+  check_val_every_n_epoch: 1
+  # strategy: ddp_find_unused_parameters_true
+
+wandb:
+  project: "Deepfake-RADAR-Experiments"
+  entity: "alexandreacff-federal-university-of-goi-s"

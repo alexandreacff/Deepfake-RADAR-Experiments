@@ -1,0 +1,47 @@
+_target_: src.data.la2019_datamodule.LA2019DataModule
+data_dir: "/workspace/datasets/LA"
+batch_size: 32
+num_workers: 8
+persistent_workers: true
+pin_memory: false
+model_name: facebook/wav2vec2-xls-r-300m 
+target_sample_rate: 16000
+augmentation:
+  enabled: false
+  apply_probability: 1.0
+
+  # Signal level operations
+  peak_level_prob: 0.2
+  peak_level_dbfs_range: [-6.0, -1.0]
+  fade_prob: 0.2
+  fade_ms_range: [5.0, 40.0]
+  fade_shape: linear
+
+  # Signal structure modifications
+  trim_silence_prob: 0.1
+  trim_silence_threshold_dbfs: -40.0
+  zero_padding_prob: 0.1
+  zero_padding_target_num_samples: 64600
+  zero_padding_mode: right
+
+  # Environmental conditions
+  env_noise_prob: 0.3
+  env_noise_snr_db_range: [10.0, 25.0]
+  background_music_prob: 0.2
+  background_music_snr_db_range: [15.0, 30.0]
+  rir_prob: 0.2
+  noise_paths: []
+  music_paths: []
+  rir_paths: []
+
+  # Media channel effects
+  codec_prob: 0.2
+  codec_format: mp3
+  codec_compression: 64k
+  resample_prob: 0.2
+  resample_temp_rate_range: [8000, 12000]
+  drc_prob: 0.2
+  drc_amount: 6.0
+  bandwidth_prob: 0.2
+  bandwidth_low_freq: null
+  bandwidth_high_freq_range: [3000.0, 7000.0]

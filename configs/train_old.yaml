@@ -1,7 +1,9 @@
+# @package _global_
 
-model_name: "facebook/wav2vec2-xls-r-300m"
-
+# specify here default configuration
+# order of defaults determines the order in which configs override each other
 defaults:
+  - _self_
   - data: LA2019
   - model: deepfake_classifier
   - callbacks: experimento_test
@@ -24,7 +26,6 @@ defaults:
 
   # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
-  - _self_
 
 # task name, determines output directory path
 task_name: "train"
@@ -46,13 +47,6 @@ ckpt_path: null
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: 42
-
-data:
-  model_name: ${model_name}
-
-model:
-  net:
-    model_name: ${model_name}
 
 wandb:
   project: "Deepfake-RADAR-Experiments"
