@@ -31,6 +31,11 @@ jobs:
         run: echo '${{ steps.file_changes.outputs.files}}'
 
       - name: Run pre-commits
-        uses: pre-commit/action@v2.0.3
-        with:
-          extra_args: --files ${{ steps.file_changes.outputs.files}}
+        run: |
+          python -m pip install pre-commit
+          FILES="${{ steps.file_changes.outputs.files }}"
+          if [ -n "$FILES" ]; then
+            pre-commit run --files $FILES
+          else
+            echo "No modified files to check."
+          fi
